@@ -199,6 +199,33 @@ jobs:
         run: |
           Get-CimInstance -Class Win32_logicaldisk
 
+      - name: Clone CCTag
+        run: |
+          git clone https://github.com/alicevision/CCTag.git --filter=blob:none
+
+      - name: Build CCTag
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/CCTag/CMakeLists.txt'
+          buildDirectory: ${{ env.buildDir }}/CCTag
+          buildWithCMakeArgs: '--config Release --target install'
+          cmakeAppendedArgs: -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake
+                             -DVCPKG_TARGET_TRIPLET=x64-windows
+                             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+                             -A x64 -T host=x64
+                             -DTARGET_ARCHITECTURE=zen
+                             -DCMAKE_INSTALL_PREFIX=${{ env.ALICEVISION_ROOT }}
+                             -DCCTAG_WITH_CUDA:BOOL=OFF
+                             -DCCTAG_BUILD_APPS:BOOL=OFF
+                             -DCCTAG_ENABLE_SIMD_AVX2:BOOL=ON
+                             -DBOOST_NO_CXX11=ON
+
+          # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
+          cmakeBuildType: Release
+          buildWithCMake: true
+      
+
       - name: Build
         uses: lukka/run-cmake@v3
         with:
@@ -218,16 +245,18 @@ jobs:
                              -DALICEVISION_USE_CCTAG=ON
                              -DBOOST_NO_CXX11=ON
                              -DCUDA_NVCC_FLAGS=--allow-unsupported-compiler;-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+                             -DCCTag_DIR:PATH=${{ env.ALICEVISION_ROOT }}/lib/cmake/CCTag
 
           # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
           cmakeBuildType: Release
           buildWithCMake: true
+          
 
       - name: Upload
         uses: actions/upload-artifact@v4.4.3
         with:
           name: build-windows
-          path: build
+          path: install
 
       - name: UnitTests
         if: false
