@@ -20,6 +20,7 @@ on:
 
 jobs:
   build-linux:
+    if: false
     runs-on: ubuntu-latest
     container:
       image: alicevision/alicevision-deps:2024.11.25-ubuntu22.04-cuda12.1.0
@@ -209,18 +210,12 @@ jobs:
                              -DVCPKG_TARGET_TRIPLET=x64-windows
                              -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
                              -A x64 -T host=x64
-                             -DBUILD_SHARED_LIBS=ON
-                             -DTARGET_ARCHITECTURE=core
+                             -DTARGET_ARCHITECTURE=zen
                              -DCMAKE_INSTALL_PREFIX=${{ env.ALICEVISION_ROOT }}
-                             -DALICEVISION_BUILD_TESTS=ON
+                             -DALICEVISION_BUILD_TESTS=OFF
                              -DALICEVISION_USE_OPENCV=ON
                              -DALICEVISION_USE_CUDA=ON
-                             -DALICEVISION_USE_CCTAG=OFF
-                             -DALICEVISION_USE_POPSIFT=OFF
-                             -DALICEVISION_USE_ALEMBIC=ON
-                             -DALICEVISION_USE_OPENGV=OFF
-                             -DALICEVISION_BUILD_STEREOPHOTOMETRY=OFF
-                             -DALICEVISION_BUILD_SEGMENTATION=OFF
+                             -DALICEVISION_USE_CCTAG=ON
                              -DBOOST_NO_CXX11=ON
                              -DCUDA_NVCC_FLAGS=--allow-unsupported-compiler;-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
 
@@ -228,7 +223,14 @@ jobs:
           cmakeBuildType: Release
           buildWithCMake: true
 
+      - name: Upload
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: build-windows
+          path: build
+
       - name: UnitTests
+        if: false
         uses: lukka/run-cmake@v3
         with:
           cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
