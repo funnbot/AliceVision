@@ -217,6 +217,7 @@ jobs:
                              -DTARGET_ARCHITECTURE=zen
                              -DCMAKE_INSTALL_PREFIX=${{ env.ALICEVISION_ROOT }}
                              -DCCTAG_WITH_CUDA:BOOL=OFF
+                             -DCCTAG_BUILD_TESTS=OFF
                              -DCCTAG_BUILD_APPS:BOOL=OFF
                              -DCCTAG_ENABLE_SIMD_AVX2:BOOL=ON
                              -DBOOST_NO_CXX11=ON
@@ -242,7 +243,7 @@ jobs:
                              -DALICEVISION_BUILD_TESTS=OFF
                              -DALICEVISION_USE_OPENCV=ON
                              -DALICEVISION_USE_CUDA=ON
-                             -DALICEVISION_USE_CCTAG=ON
+                             -DALICEVISION_USE_CCTAG=OFF
                              -DBOOST_NO_CXX11=ON
                              -DCUDA_NVCC_FLAGS=--allow-unsupported-compiler;-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
                              -DCCTag_DIR:PATH=${{ env.ALICEVISION_ROOT }}/lib/cmake/CCTag
