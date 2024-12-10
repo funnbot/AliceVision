@@ -1,6 +1,9 @@
 name: Continuous Integration
 
 on:
+  workflow_run:
+    branches:
+      - develop
   push:
     branches:
       - master
