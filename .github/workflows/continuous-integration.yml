@@ -278,7 +278,7 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: build-windows
+          name: install-windows
           path: install
 
       - name: UnitTests
@@ -294,3 +294,11 @@ jobs:
           cmakeBuildType: Release
           useVcpkgToolchainFile: true
           buildWithCMake: true
+
+      - name: Upload Build
+        if: always()
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: build-windows
+          path: build
+      
