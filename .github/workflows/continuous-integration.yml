@@ -183,13 +183,13 @@ jobs:
 
       - name: vcpkg - ensure installed
         run: |
-          ${{ env.vcpkgDir }}/vcpkg install boost-algorithm boost-accumulators boost-atomic boost-container boost-date-time boost-exception boost-geometry boost-graph boost-json boost-log boost-program-options boost-property-tree boost-ptr-container boost-regex boost-serialization boost-system boost-test boost-thread boost-timer boost-format lz4 liblemon openexr alembic geogram eigen3 expat flann nanoflann onnxruntime-gpu opencv[eigen,ffmpeg,webp,contrib,nonfree,cuda] openimageio[opencolorio,pybind11,libraw,ffmpeg,freetype,opencv,gif,openjpeg,webp] openmesh ceres[suitesparse,cxsparse] cuda tbb assimp pcl clp libe57format qt5 alembic boost-chrono boost-core boost-filesystem boost-math boost-stacktrace --triplet x64-windows --clean-after-build
+          ${{ env.vcpkgDir }}/vcpkg install boost-algorithm boost-accumulators boost-atomic boost-container boost-date-time boost-exception boost-geometry boost-graph boost-json boost-log boost-program-options boost-property-tree boost-ptr-container boost-regex boost-serialization boost-system boost-test boost-thread boost-timer boost-format lz4 liblemon openexr alembic geogram eigen3 expat flann nanoflann onnxruntime-gpu opencv[eigen,ffmpeg,webp,contrib,nonfree,cuda] openimageio[opencolorio,pybind11,libraw,ffmpeg,freetype,opencv,gif,openjpeg,webp] openmesh ceres[suitesparse,cxsparse] cuda tbb assimp pcl clp libe57format alembic boost-chrono boost-core boost-filesystem boost-math boost-stacktrace --triplet x64-windows --clean-after-build
 
       - name: Get CUDA Toolkit
         uses: Jimver/cuda-toolkit@v0.2.10
         id: cuda-toolkit
         with:
-          cuda: '11.6.0'
+          cuda: '11.6.2'
 
       - name: Display CUDA information
         run: echo "Installed cuda version is "${{steps.cuda-toolkit.outputs.cuda}}
@@ -270,31 +270,6 @@ jobs:
                              -DBOOST_NO_CXX11=ON
                              -DCUDA_NVCC_FLAGS=--allow-unsupported-compiler;-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
                              -DCCTag_DIR:PATH=${{ env.ALICEVISION_ROOT }}/lib/cmake/CCTag
-
-          # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
-          cmakeBuildType: Release
-          buildWithCMake: true
-
-
-      - name: Clone QtAliceVision
-        run: |
-          git clone https://github.com/alicevision/QtAliceVision.git --filter=blob:none
-
-      - name: Build QtAliceVision
-        uses: lukka/run-cmake@v3
-        with:
-          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-          cmakeListsTxtPath: '${{ github.workspace }}/QtAliceVision/CMakeLists.txt'
-          buildDirectory: ${{ env.buildDir }}/QtAliceVision
-          buildWithCMakeArgs: '--config Release --target install'
-          cmakeAppendedArgs: -G "NMake Makefiles"
-                             -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake
-                             -DVCPKG_TARGET_TRIPLET=x64-windows
-                             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-                             -A x64 -T host=x64
-                             -DCMAKE_INSTALL_PREFIX=${{ env.ALICEVISION_ROOT }}
-                             -DAliceVision_DIR=${{ env.ALICEVISION_ROOT }}
-                             -DBOOST_NO_CXX11=ON
 
           # This input tells run-cmake to consume the vcpkg.cmake toolchain file set by run-vcpkg.
           cmakeBuildType: Release
