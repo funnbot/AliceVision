@@ -265,7 +265,8 @@ jobs:
                              -DALICEVISION_BUILD_TESTS=OFF
                              -DALICEVISION_USE_OPENCV=ON
                              -DALICEVISION_USE_CUDA=ON
-                             -DALICEVISION_USE_CCTAG=ON
+                             -DALICEVISION_USE_CCTAG=OFF
+                             -DALICEVISION_USE_APRILTAG=ON
                              -Dapriltag_DIR:PATH=${{ env.ALICEVISION_ROOT }}/share/apriltag/cmake
                              -DBOOST_NO_CXX11=ON
                              -DCUDA_NVCC_FLAGS=--allow-unsupported-compiler;-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
